@@ -4,6 +4,7 @@ Expects trajectories in trajopt format
 See: https://github.com/aravindr93/trajopt.git
 """
 
+import os
 import pickle
 import click 
 
@@ -16,10 +17,11 @@ USAGE:\n
 @click.option('--file', type=str, help='pickle file with trajectories', required= True)
 @click.option('--repeat', type=int, help='number of times to play trajectories', default=10)
 def main(file, repeat):
+	os.mkdir("viz_vids")
 	trajectories = pickle.load(open(file, 'rb'))
-	for _ in range(repeat):
-		for traj in trajectories:
-			traj.animate_result()
+	for i in range(repeat):
+		for j, traj in enumerate(trajectories):
+			traj.render_result(os.path.join("viz_vids", f"traj{i}_repeat{j}.mp4"))
 
 if __name__ == '__main__':
 	main()

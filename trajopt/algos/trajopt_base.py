@@ -3,6 +3,7 @@ Base trajectory class
 """
 
 import numpy as np
+import imageio
 
 class Trajectory:
     def __init__(self, env, H=32, seed=123):
@@ -55,3 +56,16 @@ class Trajectory:
             self.env.render()
             self.env.step(self.sol_act[k])
         self.env.env.env.mujoco_render_frames = False
+
+    def render_result(self, fname):
+        self.env.reset(self.seed)
+        self.env.set_env_state(self.sol_state[0])
+        vid_writer = imageio.get_writer(fname, mode="I", fps=20)
+        solved = False
+        for k in range(len(self.sol_act)):
+            curr_frame = self.env.env.sim.render(width=640, height=480, mode='offscreen', device_id=0)
+            vid_writer.append_data(curr_frame[::-1,:,:])
+            _, _, _, info = self.env.step(np.clip(self.sol_act[k], -0.999, .999))
+            solved = solved or info["solved"]
+        vid_writer.close()
+        return solved
