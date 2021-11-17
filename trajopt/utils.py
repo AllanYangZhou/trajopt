@@ -15,8 +15,8 @@ def do_env_rollout(env_id, start_state, act_list):
            Length of act_list is the number of desired rollouts.
     """
     e = get_environment(env_id)
-    e.reset()
     e.real_env_step(False)
+    e.reset()
     paths = []
     H = act_list[0].shape[0]
     N = len(act_list)

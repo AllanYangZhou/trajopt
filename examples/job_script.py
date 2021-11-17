@@ -12,7 +12,7 @@ import pickle
 import gym
 import mjrl.envs
 import trajopt.envs
-#import mj_envs
+import mj_envs
 import argparse
 import json
 import os
@@ -76,6 +76,9 @@ for i in range(job_data['num_traj']):
     
     for t in trigger_tqdm(range(job_data['H_total']), VIZ):
         agent.train_step(job_data['num_iter'])
+        if agent.done:
+            print(f"Done early at {t}.")
+            break
     
     end_time = timer.time()
     print("Trajectory reward = %f" % np.sum(agent.sol_reward))
@@ -88,7 +91,10 @@ pickle.dump(trajectories, open(PICKLE_FILE, 'wb'))
 
 if VIZ:
     _ = input("Press enter to display optimized trajectory (will be played 10 times) : ")
-    for i in range(10):
-        [traj.animate_result() for traj in trajectories]
+    vid_dir = os.path.join(OUT_DIR, "vids")
+    os.mkdir(vid_dir)
+    for i, traj in enumerate(trajectories):
+        solved = traj.render_result(os.path.join(vid_dir, f"traj{i}.mp4"))
+        print(f"Traj {i} is_solved: {solved}")
 
 # =======================================

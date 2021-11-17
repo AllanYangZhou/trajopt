@@ -43,6 +43,7 @@ class MPPI(Trajectory):
         self.sol_obs.append(self.env.get_obs())
         self.act_sequence = np.ones((self.H, self.m)) * self.mean
         self.init_act_sequence = self.act_sequence.copy()
+        self.done = False
 
     def update(self, paths):
         num_traj = len(paths)
@@ -60,11 +61,12 @@ class MPPI(Trajectory):
         # accept first action and step
         action = act_sequence[0].copy()
         self.env.real_env_step(True)
-        _, r, _, _ = self.env.step(action)
+        _, r, _, info = self.env.step(action)
         self.sol_act.append(action)
         self.sol_state.append(self.env.get_env_state().copy())
         self.sol_obs.append(self.env.get_obs())
         self.sol_reward.append(r)
+        self.done = info["solved"]
 
         # get updated action sequence
         if self.warmstart:
