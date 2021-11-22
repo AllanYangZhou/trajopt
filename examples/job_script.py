@@ -20,6 +20,7 @@ import hydra
 
 @hydra.main(config_path="configs", config_name="continual_kitchen_config")
 def main(job_data):
+    print(mj_envs.__path__)  # Necessary for mj_envs to work on SLURM. No clue why.
     # Unpack args and make files for easy access
     ENV_NAME = job_data['env_name']
     PICKLE_FILE = 'trajectories.pickle'
@@ -62,7 +63,9 @@ def main(job_data):
                     seed=seed)
         
         for t in trigger_tqdm(range(job_data.H_total), VIZ):
+            step_time = timer.time()
             agent.train_step(job_data.num_iter)
+            print(f"Step in {timer.time() - step_time}.")
             if agent.done:
                 print(f"Done early at {t}.")
                 break
