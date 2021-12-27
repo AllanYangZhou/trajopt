@@ -20,12 +20,13 @@ USAGE:\n
 def main(file, repeat):
 	os.mkdir("viz_vids")
 	fnames = glob.glob(file)
-	trajectories = []
-	for fname in fnames:
-		trajectories = trajectories + pickle.load(open(fname, 'rb'))
+	j = 0
 	for i in range(repeat):
-		for j, traj in enumerate(trajectories):
-			traj.render_result(os.path.join("viz_vids", f"traj{i}_repeat{j}.mp4"))
+		for fname in fnames:
+			trajectories = pickle.load(open(fname, 'rb'))
+			for traj in trajectories:
+				traj.render_result(os.path.join("viz_vids", f"traj{j}_repeat{i}.mp4"))
+				j += 1
 
 if __name__ == '__main__':
 	main()

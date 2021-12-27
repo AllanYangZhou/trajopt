@@ -65,7 +65,8 @@ def main(job_data):
         for t in trigger_tqdm(range(job_data.H_total), VIZ):
             step_time = timer.time()
             agent.train_step(job_data.num_iter)
-            print(f"Step in {timer.time() - step_time}.")
+            if not VIZ:
+                print(f"Step in {timer.time() - step_time}.")
             if agent.done:
                 print(f"Done early at {t}.")
                 break

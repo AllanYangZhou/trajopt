@@ -1,7 +1,7 @@
 default:
     - override hydra/launcher: local
 
-env_name: kitchen_continual-v4
+env_name: kitchen_continual_plan-v4
 H_total: 200
 num_traj: 1
 seed: 100
